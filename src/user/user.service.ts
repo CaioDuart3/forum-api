@@ -1,6 +1,10 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { Prisma, User } from '@prisma/client';
 import { PrismaService } from 'src/database/prisma.service';
+import * as bcrypt from 'bcrypt';
+
+// em service, mais de um atributo no argumento passa como um objeto
+// service são injetados no controller, e são os que fazem a comunicação com o banco de dados
 
 @Injectable()
 export class UserService {
@@ -10,24 +14,27 @@ export class UserService {
 
   // create
   async createUser(data: Prisma.UserCreateInput) {
+    const hashPassword = await bcrypt.hash(data.password, 10);
     return this.prisma.user.create({
-      data,
+      data: { ...data, password: hashPassword },
     });
   }
 
   //read
   // 1 usuario
   async user(
-    userWhereUniqueInput: Prisma.UserWhereUniqueInput,
+    where: Prisma.UserWhereUniqueInput, // Prisma cria automaticamente os argumentos
   ): Promise<User | null> {
+    // promessa de retorno
     return this.prisma.user.findUnique({
-      where: userWhereUniqueInput,
+      //entra na tabela user e busca algo unico aplicando um where de sql, onde busca o dado passado no argumento
+      where,
     });
   }
 
   // N usuarios
   async users(params: {
-    skip?: number;
+    skip?: number; // opcional
     take?: number;
     cursor?: Prisma.UserWhereUniqueInput;
     where?: Prisma.UserWhereInput;

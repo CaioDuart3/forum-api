@@ -1,4 +1,6 @@
-# Sobre o NEST JS
+# Notas de estudo
+
+## Sobre o NEST JS
 
 ideal para construir API REST, úteis para o back end
 
@@ -48,19 +50,42 @@ npx prisma migrate dev --name init
 ```
 
 instalar cliente do prisma
-```
-npm install @prisma/client
+```npm install @prisma/client
 ```
 
+## Encriptar
+```
+npm i bcrypt
+npm i -D @types/bcrypt
+```
+
+## API
+Componentes de uma API Web
+
+| Componente      | Descrição                                         |
+| --------------- | ------------------------------------------------- |
+| **Endpoint**    | URL que representa um recurso (ex: `/users`)      |
+| **Método HTTP** | Ação a ser tomada: `GET`, `POST`, `PUT`, `DELETE` |
+| **Headers**     | Informações extras (ex: autenticação)             |
+| **Body**        | Conteúdo enviado em requisições `POST/PUT`        |
+| **Status Code** | Resposta da API (ex: `200 OK`, `404 Not Found`)   |
+
+Glossário: 
+collection - conjunto de requisições HTTP
+
+OBS:
+quando utilizar no controller em metodo HTTP um parametro dinamico no mesmo nivel de rota não se pode utilizar mais estatico, tem que criar mais níveis.
+ ex: @Get(:id) e @Get('rotaNivel1')
+ vai dar erro vai achar que a rota estática é um valor a ser inserido na dinamica
+ o certo é criar uma subrota, ou algo assim.
 
 ## Prática do NEST
 
-service tem que ser referenciados nos modulos de suas pastas e o modulo referencia no app.module.ts
+service e controllers tem que ser referenciados nos modulos de suas pastas e o modulo referencia no app.module.ts
 
-Classes com @Injectable(): serviços, repositórios, helpers etc.
+importante que modulos conversem entre si, com export e import, ex: database.module e user.module
 
+### analogias com django
 service: views.py, contém a lógica
 controller é o urls.py, faz as requisitos HTTP, por rotas
 module: é o __init__, porém mais sofisticado, ele agrupa o controller e o service
-
-importante que modulos conversem entre si, com export e import, ex: database.module e user.module
