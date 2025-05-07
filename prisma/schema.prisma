@@ -1,0 +1,48 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL") //sqlite
+}
+
+
+model User {
+  id        Int   @default(autoincrement()) @id  //PK
+  email     String   @unique
+  name      String?  
+  password  String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  questions     Questions[]  //User recebe FK com 1:N de questions
+  answers       Answers[]   //User recebe FK com 1:N de Answers
+}
+
+model Questions {
+  id        Int   @default(autoincrement()) @id  //PK
+  title     String
+  body      String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  userId    Int                                  //FK
+  user      User     @relation(fields: [userId], references: [id]) //Questions.userId é uma FK para User.id
+  answers   Answers[] //Questions recebe FK com 1:N de Answers
+}
+
+model Answers {
+  id        Int   @default(autoincrement()) @id    //PK
+  body      String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  userId    Int                                   //FK
+  questionId Int                                  //FK
+  user      User     @relation(fields: [userId], references: [id]) //Answers.userId é uma FK para User.id
+  question  Questions @relation(fields: [questionId], references: [id]) //Answers.questionId é uma FK para Question.id
+}
